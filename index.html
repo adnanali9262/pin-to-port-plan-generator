@@ -1,0 +1,94 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Pin-to-Port Plan Generator (Copper NW)</title><style>
+:root{--bg:#f3f5f8;--panel:#fff;--text:#16212e;--muted:#667689;--line:#e1e6ec;--line2:#cdd5de;--input:#fff;--accent:#1a5fb4;--accentH:#154f96;--accentS:#e8f0fb;--ok:#177a4b;--okH:#12633d;--th:#eef2f6;--thc:#33475b;--alt:#f8fafc;--hover:#eaf2fc;--err:#b42318;--errS:#fef3f2;--errB:#fda29b;--shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);--bar:#0f2a43;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e151d;--panel:#172230;--text:#e6edf4;--muted:#9aabbd;--line:#273648;--line2:#35495e;--input:#0f1a26;--accent:#4a9ede;--accentH:#6bb0e8;--accentS:#1b3148;--ok:#2f9e6a;--okH:#3bb27a;--th:#1f2d3d;--thc:#c4d3e2;--alt:#1a2634;--hover:#223a52;--err:#f97066;--errS:#2b1a1a;--errB:#7a2e2a;--shadow:none;--bar:#0a1622;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e151d;--panel:#172230;--text:#e6edf4;--muted:#9aabbd;--line:#273648;--line2:#35495e;--input:#0f1a26;--accent:#4a9ede;--accentH:#6bb0e8;--accentS:#1b3148;--ok:#2f9e6a;--okH:#3bb27a;--th:#1f2d3d;--thc:#c4d3e2;--alt:#1a2634;--hover:#223a52;--err:#f97066;--errS:#2b1a1a;--errB:#7a2e2a;--shadow:none;--bar:#0a1622;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.top{background:var(--bar);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}.top div{max-width:1440px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:12px}.logo{width:30px;height:30px;border-radius:7px;background:#2b7fd1;display:grid;place-items:center;font-weight:700;font-size:13px}.top h1{margin:0;font-size:16px;font-weight:650;letter-spacing:.01em}
+main{max-width:1440px;margin:20px auto 32px;padding:0 20px;display:grid;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+.cfg{padding:16px 18px 14px}.groups{display:grid;grid-template-columns:auto auto auto;gap:14px 28px;justify-content:start}
+.grp{min-width:0}.gt{font-size:11px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line)}.row{display:flex;flex-wrap:wrap;gap:10px}
+.f{display:flex;flex-direction:column;gap:4px}.f label{font-size:12px;font-weight:600;color:var(--text)}
+select,input{height:32px;padding:0 9px;border:1px solid var(--line2);border-radius:6px;background:var(--input);color:var(--text);font:inherit;font-size:13px;transition:border-color .12s,box-shadow .12s}select{padding-right:4px}
+input:hover,select:hover{border-color:var(--muted)}input:focus,select:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accentS)}
+input.bad{border-color:var(--err);background:var(--errS)}input.bad:focus{box-shadow:0 0 0 3px var(--errS)}
+.foot{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}.hint{font-size:12px;color:var(--muted);flex:1;min-width:220px}
+.btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid transparent;font:inherit;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .12s,border-color .12s}.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.btn:disabled{opacity:.45;cursor:not-allowed}
+.primary{background:var(--accent);color:#fff}.primary:hover:not(:disabled){background:var(--accentH)}.ghost{background:transparent;border-color:var(--line2);color:var(--text)}.ghost:hover:not(:disabled){background:var(--th)}.success{background:var(--ok);color:#fff}.success:hover:not(:disabled){background:var(--okH)}
+.err{display:none;margin-top:12px;padding:9px 12px;border:1px solid var(--errB);background:var(--errS);color:var(--err);border-radius:6px;font-size:13px;font-weight:500}.err.on{display:block}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}.bar h2{margin:0;font-size:15px;font-weight:650}.badge{margin-left:8px;font-size:12px;font-weight:600;color:var(--accent);background:var(--accentS);padding:2px 9px;border-radius:999px;vertical-align:1px}
+.acts{display:flex;gap:8px;flex-wrap:wrap}.chips{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--alt)}.chip{font-size:12px;color:var(--muted)}.chip b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}.chip+.chip{padding-left:10px;border-left:1px solid var(--line2)}
+.tw{overflow:auto;max-height:calc(100vh - 330px);min-height:200px}table{border-collapse:separate;border-spacing:0;width:100%;font-size:12.5px;white-space:nowrap}
+th{position:sticky;top:0;z-index:1;background:var(--th);color:var(--thc);text-align:left;font-size:11px;letter-spacing:.05em;font-weight:650;padding:9px 12px;border-bottom:1px solid var(--line2)}td{padding:7px 12px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}tbody tr:nth-child(even){background:var(--alt)}tbody tr:hover{background:var(--hover)}
+.mono{font-family:ui-monospace,Consolas,"SF Mono",monospace;font-size:12px}.empty{padding:56px 16px;text-align:center;color:var(--muted)}.dl{padding:0 16px 10px;font-size:12px;color:var(--muted)}.dl:empty{display:none}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:#14202d;color:#fff;padding:9px 16px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;box-shadow:0 6px 20px rgba(0,0,0,.25)}.toast.on{opacity:1;transform:translate(-50%,0)}
+.credit{max-width:1440px;margin:0 auto;padding:0 20px 24px;text-align:center;font-size:12px;color:var(--muted)}.credit b{color:var(--text);font-weight:600}
+@media(max-width:980px){.groups{grid-template-columns:1fr}.tw{max-height:65vh}main{padding:0 12px}.top div{padding:12px}}
+</style></head><body>
+<header class="top"><div><span class="logo">P2P</span><h1>Pin-to-Port Plan Generator <span style="font-weight:500;opacity:.75">(Copper NW)</span></h1></div></header>
+<main>
+<section class="card cfg" id="form"><div class="groups">
+<div class="grp"><p class="gt">Card</p><div class="row">
+<div class="f"><label for="frame">Frame</label><select id="frame"><option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></div>
+<div class="f"><label for="slot">Slot</label><select id="slot"></select></div>
+<div class="f"><label for="vendor">Vendor</label><select id="vendor"><option>ZTE</option><option>HUAWEI</option><option>NOKIA</option></select></div>
+<div class="f"><label for="port_type">Port type</label><select id="port_type"><option>ADSL</option><option>PSTN</option><option>VDSL</option></select></div>
+<div class="f"><label for="ports">Total ports</label><select id="ports"><option value="16">16</option><option value="32" selected>32 (GELC)</option><option value="48">48 (CAME)</option><option value="64">64 (CCPE)</option></select></div></div></div>
+<div class="grp"><p class="gt">Network</p><div class="row">
+<div class="f"><label for="ip">IP address</label><input id="ip" value="192.168.1.100" style="width:130px" inputmode="decimal"></div>
+<div class="f"><label for="switch_id">Switch ID</label><input id="switch_id" value="SWH00001" style="width:100px"></div>
+<div class="f"><label for="node_id">Node ID</label><input id="node_id" type="number" min="0" value="1001" style="width:76px"></div></div></div>
+<div class="grp"><p class="gt">Numbering</p><div class="row">
+<div class="f"><label for="tid_start">Starting TID</label><input id="tid_start" type="number" min="0" value="0" style="width:88px"></div>
+<div class="f"><label for="tag_in">Tag In start</label><input id="tag_in" value="1/0" style="width:76px"></div>
+<div class="f"><label for="tag_out">Tag Out start</label><input id="tag_out" value="0/0" style="width:76px"></div>
+<div class="f"><label for="block_size">MDF tag block</label><input id="block_size" type="number" min="1" value="128" style="width:84px"></div></div></div>
+</div><div id="error" class="err" role="alert"></div>
+<div class="foot"><div class="hint">ZTE and NOKIA ports start from 1; HUAWEI from 0. Tag In rolls over at the MDF block size; Tag Out stays fixed (0/0).</div><button class="btn ghost" id="reset">Reset</button><button class="btn primary" id="generate">Generate plan</button></div></section>
+<section class="card"><div class="bar"><h2>Plan preview<span class="badge"><span id="rowcount">0</span> rows</span></h2><div class="acts"><button class="btn ghost" id="copy" disabled>Copy to clipboard</button><button class="btn success" id="download" disabled>Download Excel (.xlsx)</button></div></div>
+<div class="chips" id="chips"></div><div id="dlmsg" class="dl"></div><div id="table" class="tw"><div class="empty">Enter the card details above to generate a plan.</div></div></section></main><footer class="credit">Developed by <b>Engineer Muhammad Adnan Rafiq</b></footer><div class="toast" id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script>
+const $=id=>document.getElementById(id),slots=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
+slots.forEach(v=>{let o=document.createElement('option');o.value=v;o.textContent=v;if(v===3)o.selected=true;$('slot').append(o)});
+const fsp=['ASSETNUM','SITEID','FRAME','IPADDRESS','NAME','PORT','PORTTYPE','SECPORT','SLOT','STATUS','TAGIN','TAGOUT','TID'],mono=['NAME','TAGIN','TAGOUT','IPADDRESS'];
+const W={ASSETNUM:16,SITEID:12,FRAME:9,IPADDRESS:17,NAME:31,PORT:9,PORTTYPE:12,SECPORT:10,SLOT:9,STATUS:12,TAGIN:12,TAGOUT:12,TID:12};
+let rows=[],headers=fsp,downloads=null,tt;
+const keys=['ip','switch_id','node_id','frame','slot','vendor','port_type','ports','tid_start','tag_in','tag_out','block_size'],defaults={};keys.forEach(k=>defaults[k]=$(k).value);
+const vals=()=>{let p={};keys.forEach(k=>p[k]=$(k).value);return p};
+const tagAt=(s,i,b)=>{let [a,c]=s.split('/').map(Number),n=a*b+c+i;return `${Math.floor(n/b)}/${n%b}`};
+const esc=v=>String(v??'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1800)}
+function chips(){if(!rows.length){$('chips').style.display='none';return}$('chips').style.display='flex';const f=rows[0],l=rows[rows.length-1];$('chips').innerHTML=[['Ports',`${f[5]} – ${l[5]}`],['Tag In',`${f[10]} → ${l[10]}`],['TID',`${f[12]} – ${l[12]}`],['Slot',`${f[2]}/${f[8]}`]].map(c=>`<span class="chip">${c[0]} <b>${esc(c[1])}</b></span>`).join('')}
+function render(){$('rowcount').textContent=rows.length;chips();if(!rows.length){$('table').innerHTML='<div class="empty">No plan to show. Correct the highlighted fields.</div>';$('download').disabled=true;$('copy').disabled=true;return}
+let h='<table><thead><tr>'+headers.map(x=>`<th>${x}</th>`).join('')+'</tr></thead><tbody>';rows.forEach(r=>h+='<tr>'+r.map((v,i)=>`<td${mono.includes(headers[i])?' class="mono"':''}>${esc(v)}</td>`).join('')+'</tr>');$('table').innerHTML=h+'</tbody></table>';$('download').disabled=false;$('copy').disabled=false}
+function check(p){const bad=(id,m)=>{throw {id,message:m}},ip=p.ip.trim();
+if(!/^(\d{1,3}\.){3}\d{1,3}$/.test(ip)||ip.split('.').some(x=>+x>255))bad('ip','Enter a valid IPv4 address, e.g. 192.168.1.100.');
+if(!p.switch_id.trim())bad('switch_id','Switch ID is required.');
+if(p.node_id===''||+p.node_id<0)bad('node_id','Node ID is required.');
+if(p.tid_start===''||!Number.isInteger(+p.tid_start)||+p.tid_start<0)bad('tid_start','Starting TID must be a whole number, 0 or more.');
+const b=+p.block_size;if(!Number.isInteger(b)||b<1)bad('block_size','MDF tag block must be a whole number of 1 or more.');
+for(const k of ['tag_in','tag_out']){if(!/^\d+\/\d+$/.test(p[k].trim()))bad(k,'Use block/position format, e.g. 1/0.');if(+p[k].split('/')[1]>=b)bad(k,'Tag position must be lower than the MDF tag block size.')}}
+function generate(){keys.forEach(k=>$(k).classList.remove('bad'));const p=vals();try{check(p);
+const n=+p.ports,b=+p.block_size,start=p.vendor==='HUAWEI'?0:1,tid=+p.tid_start;rows=[];
+for(let i=0;i<n;i++){const port=start+i;rows.push([p.switch_id.trim(),+p.node_id,+p.frame,p.ip.trim(),`Frame:${p.frame}/Slot:${p.slot}/Port:${port}`,port,p.port_type,0,+p.slot,'SPARE',tagAt(p.tag_in.trim(),i,b),p.tag_out.trim(),tid+i])}
+$('error').className='err';render()}catch(e){rows=[];if(e.id)$(e.id).classList.add('bad');$('error').textContent=e.message;$('error').className='err on';render()}}
+const fname=()=>{const r=rows[0],c=v=>String(v).trim().replace(/[\\/:*?"<>|\s]+/g,'_');return `${c(r[0])}_${c(r[3])}_Frame${c(r[2])}_Slot${c(r[8])}.xlsx`};
+async function exportXlsx(){if(!rows.length)return;try{
+const wb=new ExcelJS.Workbook(),ws=wb.addWorksheet('Pin to Port Plan',{views:[{state:'frozen',ySplit:1}]}),bd={style:'thin',color:{argb:'FFCBD5DF'}},border={left:bd,right:bd,top:bd,bottom:bd},tx=h=>h==='TAGIN'||h==='TAGOUT';
+ws.columns=headers.map(h=>({header:h,key:h,width:W[h]||14,style:tx(h)?{numFmt:'@'}:{}}));rows.forEach(r=>ws.addRow(r));
+ws.getRow(1).height=24;ws.getRow(1).eachCell(c=>{c.font={name:'Arial',size:10,bold:true,color:{argb:'FFFFFFFF'}};c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF173B59'}};c.alignment={horizontal:'center',vertical:'middle'};c.border=border});
+for(let r=2;r<=rows.length+1;r++)ws.getRow(r).eachCell({includeEmpty:true},c=>{c.font={name:'Arial',size:10};c.border=border;c.alignment={vertical:'middle'};if(tx(headers[c.col-1])){c.numFmt='@';c.value=String(c.value)}});
+ws.autoFilter={from:{row:1,column:1},to:{row:1,column:headers.length}};
+const buf=await wb.xlsx.writeBuffer();const fn=fname();if(downloads)await downloads.save({filename:fn,data:buf});else{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));a.download=fn;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}$('dlmsg').textContent='';toast('Excel file ready')
+}catch(e){if(e&&e.code==='declined')return;$('dlmsg').textContent='Excel export failed: '+((e&&e.message)||'unknown error')}}
+async function copyPlan(){if(!rows.length)return;const txt=[headers,...rows].map(r=>r.join('\t')).join('\n'),tx=headers.map((h,i)=>h==='TAGIN'||h==='TAGOUT'?i:-1).filter(i=>i>=0),html='<table><tr>'+headers.map(h=>`<th>${h}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+r.map((v,i)=>`<td${tx.includes(i)?" style=\"mso-number-format:'\\@'\"":''}>${esc(v)}</td>`).join('')+'</tr>').join('')+'</table>';
+try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'})})])}catch(e){try{await navigator.clipboard.writeText(txt)}catch(e2){const t=document.createElement('textarea');t.value=txt;document.body.append(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e3){}t.remove();if(!ok){toast('Copy is not available in this view');return}}}
+toast(`Copied ${rows.length} rows with headers`)}
+$('generate').onclick=generate;$('download').onclick=exportXlsx;$('copy').onclick=copyPlan;
+$('reset').onclick=()=>{keys.forEach(k=>$(k).value=k==='slot'?'3':defaults[k]);generate()};
+$('form').addEventListener('input',generate);$('form').addEventListener('change',generate);
+(async()=>{try{downloads=window.claude?await claude.use('downloads'):null}catch(e){downloads=null}
+})();
+generate();
+</script></body></html>
