@@ -1,6 +1,5 @@
 # Pin-to-Port Plan Generator (Copper NW)
 
-Single-file static web app. No build step.
+Static PWA. No build step. Deploy the contents of this folder to GitHub Pages or Netlify (HTTPS required for install).
 
-- Open `index.html` in a browser to use it locally.
-- Excel export uses ExcelJS from cdnjs (internet required on first load).
+Files: index.html, manifest.webmanifest, sw.js, icons/
